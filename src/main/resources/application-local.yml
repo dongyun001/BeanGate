@@ -1,0 +1,30 @@
+# Zero-setup local profile: in-memory H2 + Hibernate schema update.
+# Switch to `--spring.profiles.active=mysql` (see docker-compose.yml) to use MySQL.
+spring:
+  datasource:
+    url: jdbc:h2:mem:beangate;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+  flyway:
+    # H2 gets its schema from the JPA entities; Flyway migrations target MySQL only.
+    enabled: false
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+beangate:
+  rate-limit:
+    # The local profile assumes no Redis. The mysql profile (docker compose) turns this on.
+    enabled: false
+
+management:
+  health:
+    # No Redis in the zero-setup local profile, so it must not drag overall health down.
+    redis:
+      enabled: false

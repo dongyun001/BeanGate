@@ -1,0 +1,42 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: beangate-mysql
+    environment:
+      MYSQL_DATABASE: beangate
+      MYSQL_USER: beangate
+      MYSQL_PASSWORD: beangate
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      # 3306 is taken by another project's container on this machine.
+      - "13306:3306"
+    volumes:
+      - beangate-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-ubeangate", "-pbeangate"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: beangate-redis
+    ports:
+      # 6379 is taken by another project's container on this machine.
+      - "16379:6379"
+    volumes:
+      - beangate-redis:/data
+
+  # Local, free upstream for development. Pull a model once: docker exec -it beangate-ollama ollama pull qwen2.5:0.5b
+  ollama:
+    image: ollama/ollama:latest
+    container_name: beangate-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - beangate-ollama:/root/.ollama
+
+volumes:
+  beangate-mysql:
+  beangate-redis:
+  beangate-ollama:
