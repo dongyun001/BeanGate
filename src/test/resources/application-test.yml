@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:beangate-test;MODE=MySQL;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  flyway:
+    enabled: false
+
+beangate:
+  rate-limit:
+    enabled: false
+  security:
+    key-pepper: test-pepper
+    admin-token: test-admin-token
+  upstream:
+    connect-timeout-ms: 1000
+    response-timeout-ms: 5000
+    ttft-timeout-ms: 5000
+    stream-idle-timeout-ms: 5000
+
+logging:
+  level:
+    io.beangate: INFO
+    beangate.usage: INFO
